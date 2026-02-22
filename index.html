@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LexWork — Legal Services Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1208;
+    --cream: #f5f0e8;
+    --parchment: #ede6d6;
+    --gold: #c8922a;
+    --gold-light: #e8b84b;
+    --rust: #8b3a1e;
+    --sage: #4a6741;
+    --warm-white: #faf8f3;
+    --border: #d4c9b0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(245, 240, 232, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 900; color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--gold); }
+  nav ul { list-style: none; display: flex; gap: 32px; align-items: center; }
+  nav ul a { text-decoration: none; color: var(--ink); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+  nav ul a:hover { color: var(--gold); }
+  .nav-cta {
+    background: var(--ink); color: var(--cream) !important;
+    padding: 8px 20px; border-radius: 4px;
+    font-weight: 600 !important;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--gold) !important; color: var(--ink) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    padding: 100px 40px 60px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+    align-items: center;
+    background:
+      radial-gradient(ellipse 60% 60% at 80% 50%, rgba(200,146,42,0.08) 0%, transparent 70%),
+      var(--warm-white);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: 'LEX';
+    position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 30vw; font-weight: 900; color: rgba(200,146,42,0.04);
+    line-height: 1; pointer-events: none; user-select: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--parchment); border: 1px solid var(--border);
+    padding: 6px 14px; border-radius: 100px; font-size: 0.8rem;
+    font-weight: 600; color: var(--gold); letter-spacing: 0.05em;
+    text-transform: uppercase; margin-bottom: 28px;
+  }
+  .hero-badge::before { content: '⚖'; font-size: 1rem; }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    line-height: 1.05; font-weight: 900;
+    margin-bottom: 24px;
+  }
+  h1 em { font-style: italic; color: var(--gold); }
+  .hero-sub {
+    font-size: 1.1rem; line-height: 1.7; color: #5a4e38;
+    max-width: 480px; margin-bottom: 40px;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--ink); color: var(--cream);
+    padding: 14px 28px; border-radius: 4px; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold); color: var(--ink); transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent; color: var(--ink);
+    padding: 14px 28px; border-radius: 4px; border: 2px solid var(--border);
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-1px); }
+
+  /* Hero stats */
+  .hero-stats {
+    display: flex; gap: 40px; margin-top: 50px;
+    padding-top: 40px; border-top: 1px solid var(--border);
+  }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--gold); }
+  .stat-label { font-size: 0.8rem; color: #8a7a60; margin-top: 2px; }
+
+  /* Hero right - pricing cards */
+  .hero-right { position: relative; z-index: 1; }
+  .price-showcase {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .price-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    transition: transform 0.25s, box-shadow 0.25s;
+    animation: slideIn 0.6s ease both;
+  }
+  .price-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+  .price-card:nth-child(1) { animation-delay: 0.1s; }
+  .price-card:nth-child(2) { animation-delay: 0.25s; margin-left: 32px; }
+  .price-card:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .price-card.featured { border-color: var(--gold); background: var(--ink); color: var(--cream); }
+  .price-tag {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem; font-weight: 900; color: var(--gold);
+    line-height: 1;
+  }
+  .price-card.featured .price-tag { color: var(--gold-light); }
+  .price-unit { font-size: 0.85rem; color: #8a7a60; margin-top: 4px; }
+  .price-card.featured .price-unit { color: rgba(200,146,42,0.7); }
+  .price-service { font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; }
+  .price-desc { font-size: 0.85rem; color: #7a6d57; line-height: 1.5; }
+  .price-card.featured .price-desc { color: rgba(245,240,232,0.6); }
+  .price-ribbon {
+    position: absolute; top: 16px; right: -8px;
+    background: var(--gold); color: white;
+    font-size: 0.7rem; font-weight: 700; padding: 4px 16px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 8px 50%);
+  }
+
+  /* ── SECTION SHARED ── */
+  section { padding: 100px 40px; }
+  .section-label {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 16px;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 900; line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .section-sub { font-size: 1rem; color: #6a5f4a; line-height: 1.7; max-width: 560px; }
+
+  /* ── HOW IT WORKS ── */
+  .how {
+    background: var(--parchment);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+  .how-grid {
+    display: grid; grid-template-columns: 1fr 2fr; gap: 80px;
+    align-items: start; margin-top: 60px;
+  }
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex; gap: 20px; padding: 28px 0;
+    border-bottom: 1px solid var(--border); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900;
+    color: var(--border); line-height: 1; min-width: 48px; transition: color 0.2s;
+  }
+  .step:hover .step-num, .step.active .step-num { color: var(--gold); }
+  .step-title { font-weight: 600; font-size: 1rem; margin-bottom: 6px; }
+  .step-text { font-size: 0.875rem; color: #6a5f4a; line-height: 1.6; }
+
+  .roles-panel {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  .role-card {
+    background: white; border: 1px solid var(--border); border-radius: 12px;
+    padding: 32px; transition: all 0.2s;
+  }
+  .role-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+  .role-icon { font-size: 2rem; margin-bottom: 16px; }
+  .role-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+  .role-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .role-list li { font-size: 0.875rem; color: #5a4e38; padding-left: 16px; position: relative; }
+  .role-list li::before { content: '→'; position: absolute; left: 0; color: var(--gold); font-size: 0.8rem; }
+
+  /* ── SERVICES ── */
+  .services { background: var(--warm-white); }
+  .services-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; }
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .service-card {
+    border: 1px solid var(--border); border-radius: 12px; padding: 36px 28px;
+    background: white; transition: all 0.25s; position: relative; overflow: hidden;
+  }
+  .service-card::before {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    transform: scaleX(0); transition: transform 0.3s;
+  }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.08); }
+  .service-icon { width: 52px; height: 52px; border-radius: 8px; background: var(--parchment); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 20px; }
+  .service-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+  .service-desc { font-size: 0.875rem; color: #6a5f4a; line-height: 1.6; margin-bottom: 20px; }
+  .service-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 900; color: var(--gold);
+  }
+  .service-price small { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: #8a7a60; font-weight: 400; }
+
+  /* ── INTERNSHIP ── */
+  .internship {
+    background: var(--ink); color: var(--cream);
+    position: relative; overflow: hidden;
+  }
+  .internship::before {
+    content: '§'; font-family: 'Playfair Display', serif;
+    font-size: 40vw; font-weight: 900; color: rgba(255,255,255,0.02);
+    position: absolute; right: -5%; top: 50%; transform: translateY(-50%);
+    line-height: 1; pointer-events: none;
+  }
+  .internship-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; z-index: 1; }
+  .internship h2 { color: var(--cream); }
+  .internship .section-sub { color: rgba(245,240,232,0.65); }
+  .intern-features { display: flex; flex-direction: column; gap: 20px; margin-top: 40px; }
+  .intern-feature { display: flex; gap: 16px; align-items: flex-start; }
+  .intern-feature-icon { width: 40px; height: 40px; border-radius: 8px; background: rgba(200,146,42,0.15); border: 1px solid rgba(200,146,42,0.3); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+  .intern-feature-text h4 { font-weight: 600; margin-bottom: 4px; font-size: 0.95rem; }
+  .intern-feature-text p { font-size: 0.83rem; color: rgba(245,240,232,0.55); line-height: 1.5; }
+  .internship-form-side { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 40px; }
+  .internship-form-side h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 28px; }
+  .form-group { margin-bottom: 16px; }
+  label { font-size: 0.8rem; font-weight: 600; color: rgba(245,240,232,0.6); display: block; margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
+  input, select, textarea {
+    width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; padding: 12px 14px; color: var(--cream);
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    transition: border-color 0.2s; outline: none;
+  }
+  input::placeholder, textarea::placeholder { color: rgba(245,240,232,0.3); }
+  input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+  select option { background: var(--ink); }
+  textarea { resize: vertical; min-height: 80px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .submit-btn {
+    width: 100%; background: var(--gold); color: var(--ink);
+    border: none; border-radius: 6px; padding: 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; margin-top: 8px; transition: all 0.2s;
+  }
+  .submit-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials { background: var(--parchment); border-top: 1px solid var(--border); }
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+  .testi-card {
+    background: white; border: 1px solid var(--border); border-radius: 12px; padding: 32px;
+    transition: all 0.2s;
+  }
+  .testi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.07); }
+  .testi-quote { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold); line-height: 0.5; margin-bottom: 16px; }
+  .testi-text { font-size: 0.9rem; color: #4a3e2a; line-height: 1.7; margin-bottom: 24px; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 1rem; }
+  .testi-name { font-weight: 600; font-size: 0.9rem; }
+  .testi-role { font-size: 0.78rem; color: #8a7a60; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink); color: rgba(245,240,232,0.5);
+    padding: 60px 40px 32px;
+  }
+  .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 48px; }
+  .footer-brand .logo { font-size: 1.3rem; }
+  .footer-brand p { margin-top: 14px; font-size: 0.85rem; line-height: 1.7; max-width: 260px; }
+  .footer-col h5 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cream); margin-bottom: 16px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul li a { text-decoration: none; color: rgba(245,240,232,0.5); font-size: 0.875rem; transition: color 0.2s; }
+  .footer-col ul li a:hover { color: var(--gold); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-bottom p { font-size: 0.8rem; }
+  .footer-badges { display: flex; gap: 16px; }
+  .footer-badge { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 100px; padding: 6px 14px; font-size: 0.75rem; color: var(--gold); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(26,18,8,0.8);
+    backdrop-filter: blur(8px); z-index: 999;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: white; border-radius: 16px; width: 90%; max-width: 520px;
+    padding: 40px; position: relative; transform: translateY(20px);
+    transition: transform 0.3s; max-height: 90vh; overflow-y: auto;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #8a7a60; transition: color 0.2s; }
+  .modal-close:hover { color: var(--ink); }
+  .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 8px; }
+  .modal-price { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; color: var(--gold); margin-bottom: 24px; }
+  .modal label { color: #6a5f4a; }
+  .modal input, .modal select, .modal textarea { background: var(--warm-white); border-color: var(--border); color: var(--ink); }
+  .modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--gold); }
+  .modal select option { background: white; color: var(--ink); }
+  .modal .submit-btn { background: var(--ink); color: var(--cream); }
+  .modal .submit-btn:hover { background: var(--gold); color: var(--ink); }
+
+  /* Scroll animations */
+  .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.6s, transform 0.6s; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; }
+    .hero::before { display: none; }
+    .price-card:nth-child(2) { margin-left: 0; }
+    .how-grid, .internship-inner { grid-template-columns: 1fr; gap: 40px; }
+    .roles-panel, .services-grid, .testi-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .services-header { flex-direction: column; gap: 20px; align-items: flex-start; }
+    nav ul { display: none; }
+    section { padding: 60px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Lex<span>Work</span></div>
+  <ul>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#internship">For Interns</a></li>
+    <li><a href="#modal-client" onclick="openModal('client')" class="nav-cta">Get Legal Help</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">India's Legal Work Platform</div>
+    <h1>Legal Help.<br><em>Affordable.</em><br>Professional.</h1>
+    <p class="hero-sub">
+      Connect with qualified lawyers for rent agreements, document drafting, and more — at prices that make sense. Lawyers and interns find real work. People get expert help.
+    </p>
+    <div class="hero-actions">
+      <a href="#services" class="btn-primary">Explore Services</a>
+      <a href="#" onclick="openModal('lawyer')" class="btn-secondary">Join as Lawyer / Intern</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">500+</div>
+        <div class="stat-label">Verified Lawyers</div>
+      </div>
+      <div>
+        <div class="stat-num">₹99</div>
+        <div class="stat-label">Rent Agreement</div>
+      </div>
+      <div>
+        <div class="stat-num">2hr</div>
+        <div class="stat-label">Avg Delivery</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="price-showcase">
+      <div class="price-card featured">
+        <div class="price-ribbon">Most Popular</div>
+        <div class="price-service">Rent Agreement</div>
+        <div class="price-tag">₹99</div>
+        <div class="price-unit">Complete rent agreement, legally valid</div>
+        <div class="price-desc" style="margin-top:12px;">Drafted by a verified advocate. Stamp paper included in pricing guidance.</div>
+      </div>
+      <div class="price-card">
+        <div class="price-service">Document Drafting</div>
+        <div class="price-tag">₹5<span style="font-size:1.2rem">/page</span></div>
+        <div class="price-unit">Legal notices, agreements, petitions & more</div>
+        <div class="price-desc" style="margin-top:12px;">Professional legal language. Precise, clear, and court-ready.</div>
+      </div>
+      <div class="price-card">
+        <div class="price-service">Legal Consultation</div>
+        <div class="price-tag" style="font-size:1.6rem;">On Request</div>
+        <div class="price-unit">Talk to a lawyer. Clear your doubts.</div>
+        <div class="price-desc" style="margin-top:12px;">Video or text consultations. Flexible scheduling.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-label">Process</div>
+  <h2>Simple from Start<br>to Signed</h2>
+  <div class="how-grid fade-up">
+    <div class="steps">
+      <div class="step active">
+        <div class="step-num">01</div>
+        <div>
+          <div class="step-title">Choose Your Service</div>
+          <div class="step-text">Pick from rent agreements, drafting, notices, or custom services. Know the price upfront — no hidden fees.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div>
+          <div class="step-title">Share Details</div>
+          <div class="step-text">Fill in the required information. Our secure form guides you through what's needed.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div>
+          <div class="step-title">Get Matched</div>
+          <div class="step-text">A verified lawyer or trained intern is assigned to your case based on expertise and availability.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div>
+          <div class="step-title">Receive & Review</div>
+          <div class="step-text">Documents delivered to your inbox. One free revision included. Download, print, and use.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="roles-panel">
+      <div class="role-card">
+        <div class="role-icon">⚖️</div>
+        <div class="role-title">For Lawyers</div>
+        <ul class="role-list">
+          <li>Set your own availability</li>
+          <li>Accept work that suits your expertise</li>
+          <li>Build a verifiable track record</li>
+          <li>Earn from remote drafting & review</li>
+          <li>Grow your client base</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">📚</div>
+        <div class="role-title">For Law Interns</div>
+        <ul class="role-list">
+          <li>Gain real drafting experience</li>
+          <li>Work under senior advocates</li>
+          <li>Build your professional portfolio</li>
+          <li>Earn while you learn</li>
+          <li>Certificates of completion</li>
+        </ul>
+      </div>
+      <div class="role-card" style="grid-column: span 2;">
+        <div class="role-icon">🏡</div>
+        <div class="role-title">For the General Public</div>
+        <ul class="role-list">
+          <li>Affordable, transparent pricing</li>
+          <li>No jargon — plain language summaries</li>
+          <li>Documents ready in 2–24 hours</li>
+          <li>Legally valid, verified work</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="services-header fade-up">
+    <div>
+      <div class="section-label">Services</div>
+      <h2>What We Offer</h2>
+      <p class="section-sub">From everyday rental documents to complex legal notices — all at prices the common person can afford.</p>
+    </div>
+    <a href="#" onclick="openModal('client')" class="btn-primary">Book a Service</a>
+  </div>
+  <div class="services-grid fade-up">
+    <div class="service-card">
+      <div class="service-icon">🏠</div>
+      <div class="service-name">Rent Agreement</div>
+      <div class="service-desc">A complete, legally binding rent agreement for residential or commercial properties, drafted to comply with local tenancy laws.</div>
+      <div class="service-price">₹99 <small>flat</small></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📝</div>
+      <div class="service-name">Document Drafting</div>
+      <div class="service-desc">Any legal document drafted professionally — MOUs, affidavits, loan agreements, partnership deeds, and more.</div>
+      <div class="service-price">₹5 <small>/ page</small></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📬</div>
+      <div class="service-name">Legal Notice</div>
+      <div class="service-desc">Strong, formal legal notices for debt recovery, property disputes, cheque bounce, breach of contract, and more.</div>
+      <div class="service-price">₹5 <small>/ page</small></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🤝</div>
+      <div class="service-name">Sale Agreement</div>
+      <div class="service-desc">Buy-sell agreements for property, vehicles, or businesses. Protect your interests before registration.</div>
+      <div class="service-price">₹5 <small>/ page</small></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📑</div>
+      <div class="service-name">Affidavit / Declaration</div>
+      <div class="service-desc">Personal affidavits, self-declarations, and sworn statements for government, educational, or court submissions.</div>
+      <div class="service-price">₹5 <small>/ page</small></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">💬</div>
+      <div class="service-name">Legal Consultation</div>
+      <div class="service-desc">Talk to a verified lawyer about your legal situation. Get clarity, understand your rights, and plan your next steps.</div>
+      <div class="service-price" style="font-size:1rem;">On Request</div>
+    </div>
+  </div>
+</section>
+
+<!-- INTERNSHIP / JOIN -->
+<section class="internship" id="internship">
+  <div class="internship-inner">
+    <div>
+      <div class="section-label" style="color:var(--gold-light)">For Legal Professionals</div>
+      <h2>Your Skills.<br>Real Work.<br>Real Income.</h2>
+      <p class="section-sub">Whether you're a practicing advocate or a law student building your career — LexWork connects you to a steady stream of legal work requests from across India.</p>
+      <div class="intern-features">
+        <div class="intern-feature">
+          <div class="intern-feature-icon">🎓</div>
+          <div class="intern-feature-text">
+            <h4>Law Students Welcome</h4>
+            <p>Work under senior advocates. Earn, learn, and build your portfolio simultaneously.</p>
+          </div>
+        </div>
+        <div class="intern-feature">
+          <div class="intern-feature-icon">💼</div>
+          <div class="intern-feature-text">
+            <h4>Flexible Work</h4>
+            <p>Set your availability, choose the cases you want. No fixed hours, no pressure.</p>
+          </div>
+        </div>
+        <div class="intern-feature">
+          <div class="intern-feature-icon">✅</div>
+          <div class="intern-feature-text">
+            <h4>Verified Profile</h4>
+            <p>Build a credible public profile with client reviews and completed work history.</p>
+          </div>
+        </div>
+        <div class="intern-feature">
+          <div class="intern-feature-icon">💰</div>
+          <div class="intern-feature-text">
+            <h4>Weekly Payouts</h4>
+            <p>Earnings paid directly to your bank account every Friday. Transparent and on time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="internship-form-side">
+      <h3>Join LexWork</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="Rahul">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Sharma">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="rahul@example.com">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" placeholder="+91 98765 43210">
+      </div>
+      <div class="form-group">
+        <label>I am a</label>
+        <select>
+          <option value="">Select your role</option>
+          <option>Practicing Advocate (Enrolled)</option>
+          <option>Law Student (Intern)</option>
+          <option>Retired Judge / Legal Expert</option>
+          <option>Paralegal / Legal Assistant</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Area of Expertise</label>
+        <select>
+          <option value="">Select specialization</option>
+          <option>Property & Real Estate</option>
+          <option>Civil Law</option>
+          <option>Criminal Law</option>
+          <option>Corporate / Business Law</option>
+          <option>Family Law</option>
+          <option>Labour & Employment</option>
+          <option>General / All Areas</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Brief Bio</label>
+        <textarea placeholder="Tell us about your background, experience, and what kind of work you'd like to take on..."></textarea>
+      </div>
+      <button class="submit-btn" onclick="handleSubmit(event, 'join')">Apply to Join →</button>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-label fade-up">What People Say</div>
+  <h2 class="fade-up">Trusted by Tenants,<br>Lawyers & Interns</h2>
+  <div class="testi-grid fade-up">
+    <div class="testi-card">
+      <div class="testi-quote">"</div>
+      <div class="testi-text">Got my rent agreement done in under 3 hours. The lawyer even called to confirm the details. For ₹99, I honestly expected something basic — this was thorough and completely professional.</div>
+      <div class="testi-author">
+        <div class="testi-avatar">A</div>
+        <div>
+          <div class="testi-name">Abhishek Mishra</div>
+          <div class="testi-role">Tenant, Lucknow</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-quote">"</div>
+      <div class="testi-text">As a 3rd year law student, LexWork gave me something no college could — real drafting experience with real consequences. I've done 40+ documents and it shows in my confidence.</div>
+      <div class="testi-author">
+        <div class="testi-avatar">S</div>
+        <div>
+          <div class="testi-name">Saurabh Dubey</div>
+          <div class="testi-role">Law Intern, Lucknow University</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-quote">"</div>
+      <div class="testi-text">I take on 5–8 drafting requests per week. It supplements my practice income nicely and I've even converted a few platform clients into regular retainer clients.</div>
+      <div class="testi-author">
+        <div class="testi-avatar">D</div>
+        <div>
+          <div class="testi-name">Adv. Divya Mishra</div>
+          <div class="testi-role">Advocate, Delhi High Court</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="logo" style="color:var(--cream)">Lex<span>Work</span></div>
+      <p>Making legal services accessible and affordable for every Indian. Connecting the public with verified legal professionals.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Services</h5>
+      <ul>
+        <li><a href="#">Rent Agreement</a></li>
+        <li><a href="#">Document Drafting</a></li>
+        <li><a href="#">Legal Notices</a></li>
+        <li><a href="#">Affidavits</a></li>
+        <li><a href="#">Consultation</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>For Professionals</h5>
+      <ul>
+        <li><a href="#">Join as Lawyer</a></li>
+        <li><a href="#">Internship Program</a></li>
+        <li><a href="#">Verification Process</a></li>
+        <li><a href="#">Payout Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 LexWork. All rights reserved. Not a law firm — we connect you to verified legal professionals.</p>
+    <div class="footer-badges">
+      <span class="footer-badge">⚖ Verified Lawyers</span>
+      <span class="footer-badge">🔒 Secure Platform</span>
+    </div>
+  </div>
+</footer>
+
+<!-- CLIENT BOOKING MODAL -->
+<div class="modal-overlay" id="modal-client">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('client')">✕</button>
+    <h3>Book a Service</h3>
+    <div class="form-group">
+      <label>Select Service</label>
+      <select id="service-select" onchange="updatePrice()">
+        <option value="">Choose a service</option>
+        <option value="rent">Rent Agreement — ₹99 flat</option>
+        <option value="draft">Document Drafting — ₹5/page</option>
+        <option value="notice">Legal Notice — ₹5/page</option>
+        <option value="affidavit">Affidavit — ₹5/page</option>
+        <option value="consult">Consultation — On Request</option>
+      </select>
+    </div>
+    <div class="modal-price" id="modal-price-display" style="display:none"></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" placeholder="Full name">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" placeholder="+91 ...">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label>Describe Your Requirement</label>
+      <textarea placeholder="e.g. Rent agreement for 2BHK flat in Lucknow, monthly rent ₹12,000, 11 month tenure..."></textarea>
+    </div>
+    <button class="submit-btn" onclick="handleSubmit(event, 'book')">Request Service →</button>
+  </div>
+</div>
+
+<!-- LAWYER MODAL -->
+<div class="modal-overlay" id="modal-lawyer">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('lawyer')">✕</button>
+    <h3>Join LexWork</h3>
+    <p style="color:#6a5f4a;font-size:0.9rem;margin-bottom:24px;">Scroll down on the page to fill the full application form, or fill this quick form and we'll reach out.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" placeholder="Full name">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" placeholder="+91 ...">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label>Role</label>
+      <select>
+        <option>Practicing Advocate</option>
+        <option>Law Student / Intern</option>
+        <option>Paralegal</option>
+      </select>
+    </div>
+    <button class="submit-btn" onclick="handleSubmit(event, 'join')">Submit Application →</button>
+  </div>
+</div>
+
+<script>
+  function openModal(type) {
+    document.getElementById('modal-' + type).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(type) {
+    document.getElementById('modal-' + type).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('.modal-overlay').forEach(el => {
+    el.addEventListener('click', e => {
+      if (e.target === el) {
+        el.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+  });
+
+  function updatePrice() {
+    const sel = document.getElementById('service-select').value;
+    const display = document.getElementById('modal-price-display');
+    const prices = {
+      rent: '₹99', draft: '₹5/page', notice: '₹5/page',
+      affidavit: '₹5/page', consult: 'On Request'
+    };
+    if (sel && prices[sel]) {
+      display.textContent = prices[sel];
+      display.style.display = 'block';
+    } else {
+      display.style.display = 'none';
+    }
+  }
+
+  function handleSubmit(e, type) {
+    e.preventDefault();
+    const btn = e.target;
+    btn.textContent = '✓ Submitted! We\'ll contact you shortly.';
+    btn.style.background = '#4a6741';
+    btn.style.color = 'white';
+    setTimeout(() => {
+      btn.textContent = type === 'book' ? 'Request Service →' : 'Submit Application →';
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 3000);
+  }
+
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Step active state
+  document.querySelectorAll('.step').forEach(step => {
+    step.addEventListener('click', () => {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      step.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
